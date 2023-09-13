@@ -23,13 +23,13 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: [4, 'Минимальная длина поля "year" - 4'],
-    maxlength: [4, 'Максимальная длина поля "year" - 30'],
+    maxlength: [4, 'Максимальная длина поля "year" - 4'],
   },
   description: {
     type: String,
     required: true,
     minlength: [2, 'Минимальная длина поля "description" - 2'],
-    maxlength: [100, 'Максимальная длина поля "description" - 100'],
+    maxlength: [120, 'Максимальная длина поля "description" - 120'],
   },
   image: {
     type: String,

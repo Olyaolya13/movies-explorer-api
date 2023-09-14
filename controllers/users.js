@@ -1,28 +1,46 @@
+const { HTTP_STATUS_CREATED, HTTP_STATUS_OK } = require('http2').constants;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const { JWT_SECRET = 'secret-key' } = process.env;
 
-module.exports.getUserInfo = (req, res) => {
+const BadRequestError = require('../errors/bad-request-error');
+const ConflictError = require('../errors/conflict-error');
+
+module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => {
+      res.status(HTTP_STATUS_OK).send(user);
+    })
+    .catch(next);
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
+  const UserId = req.user._id;
   const { name, email } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, email }, {
+  User.findByIdAndUpdate(UserId, { name, email }, {
     new: true,
     runValidators: true,
     upsert: true,
   })
-    .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .orFail()
+    .then((users) => {
+      res.status(HTTP_STATUS_OK).send(users);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError(err.message));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -32,12 +50,12 @@ module.exports.login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch(() => {
-      res.status(500).json({ message: 'Произошла ошибка на сервере' });
+    .catch((err) => {
+      next(err);
     });
 };
 
-module.exports.createUsers = (req, res) => {
+module.exports.createUsers = (req, res, next) => {
   const {
     name, email, password,
   } = req.body;
@@ -49,20 +67,19 @@ module.exports.createUsers = (req, res) => {
       },
     ))
     .then((user) => {
-      res.status(200).send({
+      res.status(HTTP_STATUS_CREATED).send({
         name: user.name,
         email: user.email,
         _id: user._id,
       });
     })
     .catch((err) => {
-      console.log(err);
-      // if (err.code === 11000) {
-      //   next(new ConflictError('Пользователь с данным email уже существует'));
-      // } else if (err.name === 'ValidationError') {
-      //   next(new BadRequestError(err.message));
-      // } else {
-      //   next(err);
-      // }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с данным email уже существует'));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError(err.message));
+      } else {
+        next(err);
+      }
     });
 };

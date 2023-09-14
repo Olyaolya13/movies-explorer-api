@@ -17,7 +17,11 @@ mongoose.connect(DB_URL, {
   useUnifiedTopology: true,
 });
 
-const { login } = require('./controllers/users');
+const { login, createUsers } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+
+app.post('/signin', login);
+app.post('/signup', createUsers);
 
 app.use((req, res, next) => {
   req.user = {
@@ -26,6 +30,8 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/movies', require('./routes/movies'));

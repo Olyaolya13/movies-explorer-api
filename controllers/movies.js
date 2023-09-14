@@ -7,21 +7,20 @@ const BadRequestError = require('../errors/bad-request-error');
 
 module.exports.getMovies = (req, res, next) => {
   const userId = req.user._id;
-  Movie.find({ userId })
+  Movie.find({ owner: userId })
     .then((movies) => {
       res.status(HTTP_STATUS_OK).send(movies);
     })
-    .catch(() => next(new NotFoundError('Фильмы не найдены')))
     .catch(next);
 };
 
 module.exports.addMovies = (req, res, next) => {
   const userId = req.user._id;
-  Movie.create({ userId, ...req.body })
+
+  Movie.create({ owner: userId, ...req.body })
     .then((movie) => {
       Movie.findById(movie._id)
         .orFail()
-        // .populate('owner')
         .then((movies) => res.status(HTTP_STATUS_CREATED).send({ data: movies }))
         .catch((err) => {
           if (err.code === 11000) {

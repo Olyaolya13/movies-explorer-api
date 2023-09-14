@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: [2, 'Минимальная длина поля "name" - 2'],
+    minlength: [4, 'Минимальная длина поля "password" - 4'],
     select: false, // не возвращает хеш пароля
 
   },

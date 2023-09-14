@@ -29,13 +29,13 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: [2, 'Минимальная длина поля "description" - 2'],
-    maxlength: [120, 'Максимальная длина поля "description" - 120'],
+    maxlength: [250, 'Максимальная длина поля "description" - 250'],
   },
   image: {
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isUrl(v),
+      validator: (v) => validator.isURL(v),
       message: 'Некорректный Url',
     },
   },
@@ -43,7 +43,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isUrl(v),
+      validator: (v) => validator.isURL(v),
       message: 'Некорректный Url',
     },
   },
@@ -51,7 +51,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isUrl(v),
+      validator: (v) => validator.isURL(v),
       message: 'Некорректный Url',
     },
   },

@@ -4,11 +4,21 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const { rateLimit } = require('express-rate-limit');
 const NotFoundError = require('./errors/not-found-error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/movies' } = process.env;
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Слишком много запросов с этого IP, пожалуйста, подождите 15 минут',
+});
+
+app.use(limiter);
 
 app.use(helmet());
 app.use(bodyParser.json());
@@ -21,6 +31,8 @@ mongoose.connect(DB_URL, {
 
 const { login, createUsers } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -41,6 +53,8 @@ app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/movies', require('./routes/movies'));
+
+app.use(errorLogger);
 
 app.use(errors());
 

@@ -29,7 +29,6 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: [2, 'Минимальная длина поля "description" - 2'],
-      maxlength: [5000, 'Максимальная длина поля "year" - 5000'],
     },
     image: {
       type: String,

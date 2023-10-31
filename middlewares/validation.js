@@ -1,5 +1,5 @@
-const { celebrate, Joi } = require('celebrate');
-const urlPattern = require('./pattern');
+const { celebrate, Joi } = require("celebrate");
+const urlPattern = require("./pattern");
 
 const validateUserInfo = celebrate({
   params: Joi.object().keys({
@@ -20,7 +20,7 @@ const validateAddMovie = celebrate({
     director: Joi.string().required().min(2),
     duration: Joi.number().required().min(1),
     year: Joi.string().required().min(4).max(4),
-    description: Joi.string().required().min(2).max(250),
+    description: Joi.string().required().min(2),
     image: Joi.string().required().pattern(urlPattern),
     trailerLink: Joi.string().required().pattern(urlPattern),
     thumbnail: Joi.string().required().pattern(urlPattern),

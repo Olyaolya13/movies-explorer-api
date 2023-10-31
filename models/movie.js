@@ -68,13 +68,11 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: [2, 'Минимальная длина поля "nameRU" - 2'],
-      maxlength: [30, 'Максимальная длина поля "nameRU" - 30'],
     },
     nameEN: {
       type: String,
       required: true,
       minlength: [2, 'Минимальная длина поля "nameEN" - 2'],
-      maxlength: [30, 'Максимальная длина поля "nameEN" - 30'],
     },
   },
   { versionKey: false }

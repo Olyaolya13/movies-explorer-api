@@ -25,8 +25,8 @@ const validateAddMovie = celebrate({
     trailerLink: Joi.string().required().pattern(urlPattern),
     thumbnail: Joi.string().required().pattern(urlPattern),
     movieId: Joi.number().required(),
-    nameRU: Joi.string().required().min(2),
-    nameEN: Joi.string().required().min(2),
+    nameRU: Joi.string().required().min(2).max(30),
+    nameEN: Joi.string().required().min(2).max(30),
   }),
 });
 

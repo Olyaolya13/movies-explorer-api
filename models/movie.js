@@ -7,7 +7,6 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: [2, 'Минимальная длина поля "country" - 2'],
-      maxlength: [30, 'Максимальная длина поля "country" - 30'],
     },
     director: {
       type: String,

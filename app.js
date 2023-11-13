@@ -17,8 +17,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://choosemovie.nomoredomainsrocks.ru",
-  })
+    origin: "http://localhost:3000", // https://choosemovie.nomoredomainsrocks.ru
+  }) //
 );
 
 app.use(helmet());

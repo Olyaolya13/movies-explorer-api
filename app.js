@@ -15,11 +15,7 @@ const { PORT = 3000, DB_URL = "mongodb://127.0.0.1:27017/bitfilmsdb" } =
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://choosemovie.nomoredomainsrocks.ru", //
-  }) //
-);
+app.use(cors());
 
 app.use(helmet());
 app.use(bodyParser.json());
@@ -32,7 +28,7 @@ mongoose.connect(DB_URL, {
 
 app.use(requestLogger);
 
-app.use(limiter);
+// app.use(limiter);
 
 app.use("/", router);
 
